@@ -2,8 +2,8 @@ import os
 import requests as rq
 from bs4 import BeautifulSoup
 
-models_folder_url = 'https://github.com/edemskiy/docker-predict-location-server/tree/master/models'
-scalers_models_folder_url = 'https://github.com/edemskiy/docker-predict-location-server/tree/master/scalers'
+models_folder_url = 'https://github.com/edemskiy/localization-models-storage/tree/master/models'
+scalers_models_folder_url = 'https://github.com/edemskiy/localization-models-storage/tree/master/scalers'
 def get_git_folder_files(url, ext=None):
     data = rq.get(url)
     parser = BeautifulSoup(data.text, 'lxml')
