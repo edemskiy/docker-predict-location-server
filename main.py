@@ -5,21 +5,32 @@ from sklearn.externals import joblib
 from keras import backend
 from keras import models
 from keras.utils.np_utils import to_categorical
+from keras.utils.data_utils import get_file
 import numpy as np
-import os
+
+import utils
 app = Flask(__name__)
 
 dict = {5:0, 10:1, 30:2, 60:3, 120:4, 240:5}
 
 predict_models={}
-for model_name in os.listdir('models'):
-	model = models.load_model('models/' + model_name);
+scalers={}
+
+models_urls = utils.get_git_folder_files(utils.models_folder_url)
+scalers_urls = utils.get_git_folder_files(utils.scalers_models_folder_url)
+
+for url in models_urls:
+	model_name=url[url.rfind('/') + 1:-9]
+	model_path = get_file(model_name, url)
+	model = models.load_model(model_path);
 	model._make_predict_function()
 	predict_models[model_name[5:-3]] = model
 
-scalers={}
-for scaler_name in os.listdir('scalers'):
-	scalers[scaler_name[8:-5]] = joblib.load('scalers/' + scaler_name)
+for url in scalers_urls:
+	scaler_name=url[url.rfind('/') + 1:-9]
+	scaler_path = get_file(scaler_name, url)
+	scalers[scaler_name[8:-5]] = joblib.load(scaler_path)
+
 
 @app.route('/api/predict', methods=['GET'])
 def predict():
